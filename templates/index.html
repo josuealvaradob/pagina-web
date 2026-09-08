@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Samarios del Perfume — Demo</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+    <h1>Los Samarios <span>del Perfume</span></h1>
+    <p class="subtitle">Perfumería online — Demostración de patrones de diseño: Builder · Factory Method · Decorator · Strategy · State · Observer</p>
+    </header>
+
+    <main class="layout">
+        <section class="card">
+            <h2>1. Crear pedido</h2>
+            <form id="form-pedido" class="form">
+                <label>Cliente
+                    <input type="text" id="cliente" value="Juan Pérez" required>
+                </label>
+
+                <div id="items-container" class="items-container">
+                    <div class="item-row">
+                        <select class="item-producto">
+                            <option value="perfume_hombre">Perfume Hombre 100ml</option>
+                            <option value="perfume_mujer">Perfume Mujer 100ml</option>
+                            <option value="mini_perfume">Mini Perfume 30ml</option>
+                        </select>
+                        <input type="number" class="item-cantidad" min="1" value="1" placeholder="Cantidad">
+                        <input type="number" class="item-precio" min="1" value="50000" placeholder="Precio unitario">
+                        <button type="button" class="btn-remove-item" title="Quitar">✕</button>
+                    </div>
+                </div>
+                <button type="button" id="btn-add-item" class="btn-secondary">+ Agregar producto</button>
+
+                <label>Tipo de envío
+                    <select id="tipo_envio">
+                        <option value="estandar">Estándar</option>
+                        <option value="expres">Exprés</option>
+                        <option value="gratis">Gratis</option>
+                    </select>
+                </label>
+
+                <label>Cupón (opcional)
+                    <select id="cupon">
+                        <option value="">Ninguno</option>
+                        <option value="DESC10">DESC10 (10%)</option>
+                        <option value="DESC20">DESC20 (5-20%)</option>
+                        <option value="BLACKFRIDAY">BLACKFRIDAY (0-30%)</option>
+                    </select>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" id="empaque_regalo">
+                    Empaque de regalo (+ $5.000)
+                </label>
+
+                <button type="submit" class="btn-primary">Crear pedido</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>2. Pagar / Enviar pedido</h2>
+            <form id="form-pago" class="form">
+                <label>ID del pedido
+                    <input type="number" id="pedido_id_pago" required>
+                </label>
+                <label>Método de pago
+                    <select id="metodo_pago">
+                        <option value="tarjeta">Tarjeta</option>
+                        <option value="paypal">PayPal</option>
+                        <option value="nequi">Nequi</option>
+                    </select>
+                </label>
+                <div id="campos-pago"></div>
+                <button type="submit" class="btn-primary">Procesar pago</button>
+            </form>
+
+            <form id="form-enviar" class="form form-inline">
+                <label>ID del pedido
+                    <input type="number" id="pedido_id_enviar" required>
+                </label>
+                <button type="submit" class="btn-secondary">Marcar como enviado</button>
+            </form>
+        </section>
+
+        <section class="card wide">
+            <h2>3. Resultado / Pedidos</h2>
+            <div id="resultado" class="resultado">Aún no hay ningún pedido creado.</div>
+            <button id="btn-refrescar" class="btn-secondary">Refrescar lista de pedidos</button>
+            <div id="lista-pedidos" class="lista-pedidos"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Los Samarios del Perfume </p>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
