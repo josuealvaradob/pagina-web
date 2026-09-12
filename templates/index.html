@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Samarios del Perfume — Panel Administrativo</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px;">
+        <div>
+            <h1 style="margin: 0;">Los Samarios <span>del Perfume</span></h1>
+            <p class="subtitle" style="margin: 4px 0 0 0;">Panel Administrativo de Control — Demostración de patrones de diseño: Builder · Factory Method · Decorator · Strategy · State · Observer</p>
+        </div>
+        <img src="/static/img/logo.jpeg" alt="Logo Los Samarios del Perfume" style="height: 120px; width: auto; object-fit: contain; border-radius: 8px;">
+    </header>
+
+    <main class="layout">
+        <section class="card">
+            <h2>1. Registrar venta / pedido</h2>
+            <form id="form-pedido" class="form">
+                <label>Cliente
+                    <input type="text" id="cliente" value="Juan Pérez" required>
+                </label>
+
+                <div id="items-container" class="items-container">
+                    <div class="item-row">
+                        <select class="item-marca">
+                            <option value="lattafa_sublime">Lattafa Sublime</option>
+                            <option value="blue_chanel">Blue Chanel</option>
+                            <option value="summer_hammer">Summer Hammer</option>
+                            <option value="lacoste_white">Lacoste White</option>
+                            <option value="one_million">One Million</option>
+                            <option value="aventus_creed">Aventus Creed</option>
+                            <option value="invictus">Invictus</option>
+                            <option value="legend_montblanc">Legend Montblanc</option>
+                            <option value="212_vip">212 VIP</option>
+                        </select>
+                        <select class="item-tamano">
+                            <option value="30ml" data-precio="15000">30ml — $15.000</option>
+                            <option value="50ml" data-precio="35000">50ml — $35.000</option>
+                            <option value="100ml" data-precio="45000">100ml — $45.000</option>
+                        </select>
+                        <input type="number" class="item-cantidad" min="1" value="1" placeholder="Cantidad">
+                        <input type="number" class="item-precio" min="1" value="15000" placeholder="Precio unitario" readonly>
+                        <button type="button" class="btn-remove-item" title="Quitar">✕</button>
+                    </div>
+                </div>
+                <button type="button" id="btn-add-item" class="btn-secondary">+ Agregar producto</button>
+
+                <label>Tipo de envío
+                    <select id="tipo_envio">
+                        <option value="estandar">Estándar ($8.000 — Gratis por compras > $150.000)</option>
+                        <option value="expres">Exprés ($15.000 — Descuento a $5.000 por compras > $150.000)</option>
+                        <option value="gratis">Gratis ($0 — Válido solo por compras > $200.000)</option>
+                    </select>
+                </label>
+
+                <label>Cupón (opcional)
+                    <select id="cupon">
+                        <option value="">Ninguno</option>
+                        <option value="DESC10">DESC10 (10% > $120.000)</option>
+                        <option value="DESC20">DESC20 (20% > $200.000)</option>
+                    </select>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" id="empaque_regalo">
+                    Empaque de regalo (+ $5.000)
+                </label>
+
+                <button type="submit" class="btn-primary">Crear pedido</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>2. Caja y Logística</h2>
+            <form id="form-pago" class="form">
+                <label>ID del pedido
+                    <input type="number" id="pedido_id_pago" required>
+                </label>
+                <label>Método de pago
+                    <select id="metodo_pago">
+                        <option value="tarjeta">Tarjeta</option>
+                        <option value="nequi">Nequi</option>
+                    </select>
+                </label>
+                <div id="campos-pago"></div>
+                <button type="submit" class="btn-primary">Procesar pago</button>
+            </form>
+
+            <form id="form-enviar" class="form form-inline" style="margin-top: 15px;">
+                <label>ID del pedido
+                    <input type="number" id="pedido_id_enviar" required>
+                </label>
+                <button type="submit" class="btn-secondary">Marcar como enviado</button>
+            </form>
+        </section>
+
+        <section class="card wide">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+                <h2 style="margin: 0;">3. Panel de Control de Pedidos</h2>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn-secondary btn-filtro" data-filtro="todos" style="opacity: 1;">Todos</button>
+                    <button type="button" class="btn-secondary btn-filtro" data-filtro="pendiente" style="opacity: 0.7;">Pendientes</button>
+                    <button type="button" class="btn-secondary btn-filtro" data-filtro="pagado" style="opacity: 0.7;">Listos para Despacho</button>
+                    <button type="button" class="btn-secondary btn-filtro" data-filtro="enviado" style="opacity: 0.7;">Completados</button>
+                    <button id="btn-refrescar" class="btn-secondary" style="margin-left: 8px;">🔄 Refrescar</button>
+                    <a href="/api/pedidos/exportar/excel" class="btn-secondary" style="margin-left: 8px;" download>📥 Descargar Excel</a>
+                </div>
+            </div>
+
+            <div id="resultado" class="resultado" style="margin-bottom: 16px;">Aún no se ha realizado ninguna acción.</div>
+
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #334155; color: #94a3b8;">
+                            <th style="padding: 10px 8px;">ID</th>
+                            <th style="padding: 10px 8px;">Cliente</th>
+                            <th style="padding: 10px 8px;">Productos</th>
+                            <th style="padding: 10px 8px;">Envío</th>
+                            <th style="padding: 10px 8px;">Total</th>
+                            <th style="padding: 10px 8px;">Estado</th>
+                            <th style="padding: 10px 8px; text-align: center;">Acción Administrativa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-pedidos-body">
+                        <!-- Las filas se renderizan dinámicamente desde app.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Los Samarios del Perfume</p>
+    </footer>
+
+    <script src="/static/js/app.js?v=3"></script>
+</body>
+</html>

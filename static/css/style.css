@@ -1,0 +1,217 @@
+:root {
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --accent: #22d3ee;
+    --accent-2: #a78bfa;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --success: #4ade80;
+    --danger: #f87171;
+    --border: #334155;
+    --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.topbar {
+    padding: 32px 24px 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.topbar h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.topbar h1 span {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-size: 0.9rem;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 1100px;
+    margin: 28px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+}
+
+.card.wide {
+    grid-column: 1 / -1;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: var(--accent);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-inline {
+    flex-direction: row;
+    align-items: end;
+    margin-top: 14px;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+label.checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+}
+
+input, select {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 0.6fr 0.9fr auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-remove-item {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--danger);
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.btn-primary, .btn-secondary {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #0f172a;
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    align-self: flex-start;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    filter: brightness(1.1);
+}
+
+.resultado {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    white-space: pre-wrap;
+    font-family: "Consolas", monospace;
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.lista-pedidos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.pedido-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+}
+
+.badge {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge.pendiente { background: #fbbf2433; color: #fbbf24; }
+.badge.pagado { background: #4ade8033; color: var(--success); }
+.badge.enviado { background: #22d3ee33; color: var(--accent); }
+.badge.cancelado { background: #f8717133; color: var(--danger); }
+
+footer {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    padding: 24px;
+}
+
+@media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+    .item-row { grid-template-columns: 1fr 1fr; }
+}

@@ -1,0 +1,22 @@
+# Entorno virtual
+.venv/
+venv/
+ENV/
+env/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Entorno e IDEs
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Archivos temporales o de base de datos local
+*.db
+*.sqlite3

@@ -1,0 +1,173 @@
+@startuml
+title Los Samarios del Perfume — 6 Patrones GoF y Arquitectura Modular
+
+hide empty members
+skinparam classAttributeIconSize 0
+
+' ============ 1. BUILDER ============
+class PedidoBuilder <<Builder>> {
+    + para_cliente(cliente: str): PedidoBuilder
+    + con_items(items: list): PedidoBuilder
+    + con_cupon(cupon: str): PedidoBuilder
+    + con_empaque_regalo(activo: bool): PedidoBuilder
+    + con_estrategia_envio(estrategia: EstrategiaEnvio): PedidoBuilder
+    + build(): dict
+}
+
+' ============ 2. DECORATOR ============
+abstract class ComponentePrecio <<Decorator>> {
+    + {abstract} calcular(): float
+}
+class PrecioBase {
+    + calcular(): float
+}
+abstract class DecoradorPrecio {
+    # envuelto: ComponentePrecio
+    + calcular(): float
+}
+class CuponDescuento {
+    + calcular(): float
+}
+class EmpaqueRegalo {
+    + calcular(): float
+}
+
+ComponentePrecio <|-- PrecioBase
+ComponentePrecio <|-- DecoradorPrecio
+DecoradorPrecio <|-- CuponDescuento
+DecoradorPrecio <|-- EmpaqueRegalo
+DecoradorPrecio o-- ComponentePrecio : envuelve
+
+PedidoBuilder ..> ComponentePrecio : orquesta
+
+' ============ 3. STRATEGY ============
+abstract class EstrategiaEnvio <<Strategy>> {
+    + {abstract} calcular_costo(subtotal: float): float
+}
+class EnvioEstandar {
+    + calcular_costo(subtotal: float): float
+}
+class EnvioExpres {
+    + calcular_costo(subtotal: float): float
+}
+class EnvioGratis {
+    + calcular_costo(subtotal: float): float
+}
+
+EstrategiaEnvio <|-- EnvioEstandar
+EstrategiaEnvio <|-- EnvioExpres
+EstrategiaEnvio <|-- EnvioGratis
+
+PedidoBuilder o-- EstrategiaEnvio : usa
+
+' ============ 4. FACTORY METHOD ============
+abstract class ProcesadorPago <<Factory Method>> {
+    + {abstract} validar_credenciales(datos: dict): void
+    + {abstract} cobrar(monto: float, datos: dict): str
+}
+class PagoTarjeta {
+    + validar_credenciales(datos: dict): void
+    + cobrar(monto: float, datos: dict): str
+}
+class PagoNequi {
+    + validar_credenciales(datos: dict): void
+    + cobrar(monto: float, datos: dict): str
+}
+class FactoryPagos <<creator>> {
+    + crear_metodo_pago(metodo: str): ProcesadorPago
+}
+
+ProcesadorPago <|-- PagoTarjeta
+ProcesadorPago <|-- PagoNequi
+FactoryPagos ..> ProcesadorPago : crea
+
+' ============ 5. STATE ============
+abstract class EstadoPedido <<State>> {
+    + {abstract} pagar(pedido: dict): void
+    + {abstract} enviar(pedido: dict): void
+}
+class EstadoPendiente {
+    + pagar(pedido: dict): void
+    + enviar(pedido: dict): void
+}
+class EstadoPagado {
+    + pagar(pedido: dict): void
+    + enviar(pedido: dict): void
+}
+class EstadoEnviado {
+    + pagar(pedido: dict): void
+    + enviar(pedido: dict): void
+}
+
+EstadoPedido <|-- EstadoPendiente
+EstadoPedido <|-- EstadoPagado
+EstadoPedido <|-- EstadoEnviado
+
+' ============ 6. OBSERVER ============
+abstract class ObservadorPago <<Observer>> {
+    + {abstract} actualizar(pedido: dict): void
+}
+class NotificadorEmail {
+    + actualizar(pedido: dict): void
+}
+class NotificadorInventario {
+    + actualizar(pedido: dict): void
+}
+class SujetoPago {
+    - observadores: list<ObservadorPago>
+    + suscribir(obs: ObservadorPago): void
+    + notificar(pedido: dict): void
+}
+
+ObservadorPago <|-- NotificadorEmail
+ObservadorPago <|-- NotificadorInventario
+SujetoPago o-- ObservadorPago : notifica a
+
+' ============ CAPA WEB / ARQUITECTURA ============
+class "app.database" as DB <<memoria>> {
+    + INVENTARIO: dict
+    + PEDIDOS: dict
+    + CONTADOR_PEDIDOS: int
+}
+
+class "app.schemas" as Schemas <<pydantic>> {
+    + ItemPedido
+    + CrearPedidoRequest
+    + PagoRequest
+}
+
+class "pedidos.router" as PedidosRouter <<router>> {
+    + crear_pedido()
+    + listar_pedidos()
+    + obtener_pedido()
+    + marcar_enviado()
+    + eliminar_pedido()
+}
+
+class "pagos.router" as PagosRouter <<router>> {
+    + procesar_pago()
+}
+
+class "main.py" as MainApp <<app>> {
+    + index()
+    + ver_inventario()
+    + exportar_pedidos_excel()
+}
+
+' Relaciones de integración
+PedidosRouter ..> Schemas : valida con
+PedidosRouter ..> PedidoBuilder : usa
+PedidosRouter ..> DB : lee / escribe
+PedidosRouter ..> EstadoPedido : transiciona
+
+PagosRouter ..> Schemas : valida con
+PagosRouter ..> FactoryPagos : usa
+PagosRouter ..> EstadoPedido : transiciona
+PagosRouter ..> SujetoPago : notifica
+PagosRouter ..> DB : actualiza
+
+MainApp *-- PedidosRouter : monta
+MainApp *-- PagosRouter : monta
+MainApp ..> DB : consulta
+
+@enduml
